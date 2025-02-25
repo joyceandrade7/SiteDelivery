@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Online - Pedido via WhatsApp</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .search-bar { width: 50%; padding: 10px; margin-bottom: 20px; }
+        .produto { border: 1px solid #ddd; padding: 10px; margin: 10px; display: inline-block; width: 220px; text-align: center; }
+        .produto img { width: 100px; height: 100px; object-fit: cover; }
+        .carrinho { margin-top: 20px; border: 1px solid #000; padding: 10px; }
+        button { background-color: #25d366; color: white; border: none; padding: 10px; cursor: pointer; }
+        button:hover { background-color: #1ebe57; }
+    </style>
+</head>
+<body>
+
+    <h2>Delivery Farmácia GBarbosa</h2>
+    
+    <!-- Barra de pesquisa -->
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 Buscar produto..." onkeyup="filtrarProdutos()">
+
+    <!-- Produtos Fixos -->
+    <div id="produtos-container">
+        <div class="produto">
+            <img src="https://i.postimg.cc/NK58fpB8/compre-dipirona-500mg.png" alt="Produto 1">
+            <h3>Produto 1</h3>
+            <p>Preço: R$50,00</p>
+            <button onclick="adicionarProduto('Produto 1', 50)">Adicionar</button>
+        </div>
+
+        <div class="produto">
+            <img src="https://via.placeholder.com/100" alt="Produto 2">
+            <h3>Produto 2</h3>
+            <p>Preço: R$30,00</p>
+            <button onclick="adicionarProduto('Produto 2', 30)">Adicionar</button>
+        </div>
+    </div>
+
+    <!-- Carrinho -->
+    <div class="carrinho">
+        <h3>🛒 Seu Carrinho</h3>
+        <ul id="lista-carrinho"></ul>
+        <p><strong>Total: R$<span id="total">0</span></strong></p>
+        <button onclick="finalizarPedido()">Finalizar Pedido</button>
+    </div>
+
+    <script>
+        let carrinho = [];
+
+        function adicionarProduto(nome, preco) {
+            carrinho.push({ nome, preco });
+            atualizarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            let listaCarrinho = document.getElementById("lista-carrinho");
+            let total = 0;
+            listaCarrinho.innerHTML = "";
+            carrinho.forEach(item => {
+                total += item.preco;
+                let li = document.createElement("li");
+                li.innerText = `${item.nome} - R$${item.preco}`;
+                listaCarrinho.appendChild(li);
+            });
+            document.getElementById("total").innerText = total;
+        }
+
+        function finalizarPedido() {
+            if (carrinho.length === 0) {
+                alert("Seu carrinho está vazio!");
+                return;
+            }
+
+            let numeroWhatsApp = "5579998696969"; // Substitua pelo seu número
+            let mensagem = "Olá, quero comprar:\n";
+            
+            carrinho.forEach(item => {
+                mensagem += `- ${item.nome} (R$ ${item.preco})\n`;
+            });
+
+            let link = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+            window.location.href = link;
+        }
+
+        function filtrarProdutos() {
+            let termo = document.getElementById("searchInput").value.toLowerCase();
+            let produtos = document.querySelectorAll('.produto');
+
+            produtos.forEach(produto => {
+                let nomeProduto = produto.querySelector('h3').innerText.toLowerCase();
+                if (nomeProduto.includes(termo)) {
+                    produto.style.display = "inline-block";
+                } else {
+                    produto.style.display = "none";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
